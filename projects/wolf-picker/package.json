@@ -1,0 +1,17 @@
+{
+  "name": "wolf-picker",
+  "version": "0.0.2",
+  "peerDependencies": {
+    "@angular/common": "^13.1.0",
+    "@angular/core": "^13.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "description": "Simple Angular date time picker. This picker is responsive design, so feel free to try it in your desktops, tablets and mobile devices.",
+  "author" :{
+    "name": "Dikshyant Dash",
+    "url": "https://dikshyant30.github.io/advance_portfolio/"
+  },
+  "keywords": ["angular date time picker", "wolf picker"]
+}

@@ -3,5 +3,37 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "wolf-picker": {
+      "projectType": "library",
+      "root": "projects/wolf-picker",
+      "sourceRoot": "projects/wolf-picker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/wolf-picker/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/wolf-picker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/wolf-picker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/wolf-picker/src/test.ts",
+            "tsConfig": "projects/wolf-picker/tsconfig.spec.json",
+            "karmaConfig": "projects/wolf-picker/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "wolf-picker"
 }

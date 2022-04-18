@@ -1,6 +1,6 @@
 {
   "name": "wolf-picker",
-  "version": "0.0.2",
+  "version": "1.0.2",
   "peerDependencies": {
     "@angular/common": "^13.1.0",
     "@angular/core": "^13.1.0"
@@ -13,5 +13,5 @@
     "name": "Dikshyant Dash",
     "url": "https://dikshyant30.github.io/advance_portfolio/"
   },
-  "keywords": ["angular date time picker", "wolf picker"]
+  "keywords": ["angular date time picker", "wolf picker","date time picker","custom date time picker"]
 }

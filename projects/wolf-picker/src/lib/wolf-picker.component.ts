@@ -1,84 +1,153 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'lib-wolf-picker',
+  selector: 'wolf-picker',
   templateUrl: './wolf-picker.component.html',
-  styleUrls: ['./wolf-picker.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: WolfPickerComponent,
-      multi: true
-    }
-  ]
+  styleUrls: ['./wolf-picker.component.scss']
 })
-export class WolfPickerComponent implements ControlValueAccessor {
+export class WolfPickerComponent implements OnInit {
+  today: any = new Date();
+  hrs: any;
+  mins: any;
+  secs: any;
+  hours: any = [];
+  minutes: any = [];
+  @Input() wolfTransform: any;
+  @Output() setTime = new EventEmitter<any>();
+  isSeconds: boolean = true;
+  isMilitaryTime: boolean = true;
 
-  @Output() close = new EventEmitter();
+  date =
+    this.today.getFullYear() +
+    '-' +
+    (this.today.getMonth() + 1) +
+    '-' +
+    this.today.getDate();
+  time: any =
+    this.today.getHours() +
+    ':' +
+    this.today.getMinutes() +
+    ':' +
+    this.today.getSeconds();
+  ampm = this.today.getHours() >= 12 ? 'pm' : 'am';
 
-  auto = true;
-  hhmm = 'hh';
-  ampm = 'am';
-  dial: any = [];
-  hour = '12';
-  minute = '00';
+  public months = ['January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August', 'September', 'October',
+    'November', 'December'];
+  public days:any = [];
+  public years:any = [];
+  dayVal: any = this.today.getDate();
+  monthVal: any = this.loadMonths(this.today.getMonth());
+  yearVal: any = this.today.getFullYear();
+  previousDay:any;
+  dateTime: any;
+  isOpen: boolean = false;
+  divider: string = "-";
+  disablePicker: string = "none";
 
-  private date = new Date();
-  private onChange = (v: Date) => {};
-  private onTouched = () => {};
+  constructor() {}
 
-  constructor() {
-    const j = 84;
-    for (let min = 1; min <= 12; min++) {
-      const hh = String(min);
-      const mm = String('00' + ((min * 5) % 60)).slice(-2);
-      const x = 1 + Math.sin(Math.PI * 2 * (min / 12));
-      const y = 1 - Math.cos(Math.PI * 2 * (min / 12));
-      this.dial.push({ top: j * y + 'px', left: j * x + 'px', hh, mm });
+  ngOnInit(): void {
+    this.disablePicker = this.wolfTransform?.disablePicker?.toLowerCase() === "time" ? "time" : this.wolfTransform?.disablePicker?.toLowerCase() === "date" ? "date" : this.disablePicker;
+    this.divider = this.wolfTransform?.divider === 1 ? "-" : "/";
+    this.isSeconds = this.wolfTransform?.secconds;
+    this.isMilitaryTime = this.wolfTransform?.isMilitaryTime;
+    this.hrs = this.isMilitaryTime ? this.today.getHours() : this.today.getHours() > 12 ? this.today.getHours() - 12 : this.today.getHours() == 12 ? this.today.getHours() - 12 : this.today.getHours();
+    this.mins = this.wolfTransform['steps'] ? Math.round(this.today.getMinutes() / this.wolfTransform.steps) * this.wolfTransform.steps :this.today.getMinutes();
+    this.mins = this.mins === 60 ? 0 : this.mins;
+    this.secs = this.today.getSeconds();
+    this.dateTime = this.date + ' ' + this.time + this.ampm;
+    this.loadYears(1950,2050);
+
+    const hourFormat = this.isMilitaryTime ? 24 : 12;
+
+    for (let index = 0; index < hourFormat; index++) {
+      this.hours.push(index);
+    }
+    for (let index = 0; index < 60; index++) {
+      if(this.wolfTransform['steps'] && (index % this.wolfTransform?.steps) === 0) {
+        this.minutes.push(index);
+        } else if(!this.wolfTransform['steps']) {
+          this.minutes.push(index);
+        }
     }
   }
 
-  public writeValue(v: Date) {
-    this.date = v || new Date();
-    const hh = this.date.getHours();
-    const mm = this.date.getMinutes();
-    this.ampm = hh < 12 ? 'am' : 'pm';
-    this.hour = String(hh % 12 || 12);
-    this.minute = String('00' + (mm - (mm % 5))).slice(-2);
+  changeAmPm() {
+    this.ampm = this.ampm === "am" ? "pm" : "am";
   }
 
-  public registerOnChange = (fn: any) => (this.onChange = fn);
-
-  public registerOnTouched = (fn: any) => (this.onTouched = fn);
-
-  timeChange($event: string) {
-    if (this.hhmm === 'hh') {
-      this.hour = $event;
-      if (this.auto) {
-        this.hhmm = 'mm';
-      }
-    } else {
-      this.minute = $event;
-    }
+  loadMonths(idx:any) {
+    this.loadDays(this.months[idx]);
+    return this.months[idx];
   }
 
-  rotateHand() {
-    const deg = this.hhmm === 'hh' ? +this.hour * 5 : +this.minute;
-    return `rotate(${deg * 6}deg)`;
+  loadDays(month:any) {
+     //Holds the number of days in the month
+     this.days = [];
+     let dayNum = 0;
+     //Get the current year
+     let year = this.yearVal;
+ 
+     if(month === 'January' || month === 'March' || 
+     month === 'May' || month === 'July' || month === 'August' 
+     || month === 'October' || month === 'December') {
+         dayNum = 31;
+     } else if(month === 'April' || month === 'June' 
+     || month === 'September' || month === 'November') {
+         dayNum = 30;
+     }else{
+         //Check for a leap year
+         if(new Date(year, 1, 29).getMonth() === 1){
+             dayNum = 29;
+            }else{
+              dayNum = 28;
+         }
+     }
+     //Insert the correct days into the day <select>
+     for(let i = 1; i <= dayNum; i++){
+        this.days.push(i);
+     }
+     if(this.previousDay>dayNum){
+       this.dayVal = dayNum;
+     }
   }
 
-  cancel = () => this.close.emit();
-
-  ok() {
-    let hh = +this.hour + (this.ampm === 'pm' ? 12 : 0);
-    if ((this.ampm === 'am' && hh === 12) || hh === 24) {
-      hh -= 12;
-    }
-    this.date.setHours(hh);
-    this.date.setMinutes(+this.minute);
-    this.onChange(this.date);
-    this.close.emit();
+  loadYears(start:any, end:any){
+    this.years.push(start);
+     if(start < end){
+         this.loadYears((start + 1), end);
+     }
   }
 
+  onMonthChange(newValue:any) {
+    this.loadDays(newValue.target.value);
+  }
+
+  onYearChange() {
+    this.loadDays(this.monthVal);
+  }
+
+  onDayChange() {
+    this.previousDay = this.dayVal;    
+  }
+
+  openPicker() {
+    this.isOpen = true;
+  }
+
+  closePicker() {
+    this.isOpen = false;
+  }
+
+  addExtraDigit(val:any) {
+    return val<10 ? 0+""+val : val;
+  }
+
+  sendDateTime() {
+    this.date = this.yearVal+this.divider+this.addExtraDigit(this.months.indexOf(this.monthVal)+1)+this.divider+this.addExtraDigit(this.dayVal);
+    this.time = this.addExtraDigit(this.hrs)+':'+this.addExtraDigit(this.mins)+(this.isSeconds ? `:${this.addExtraDigit(this.secs)}` : '')+(!this.isMilitaryTime ? `${this.ampm}` : '');
+    this.setTime.emit(`${this.date} ${this.time}`);
+    this.isOpen = false;
+  }
 }

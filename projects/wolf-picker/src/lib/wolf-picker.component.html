@@ -1,51 +1,76 @@
-<section class="time-picker" ontouchstart>
-    <header>
-      <div class="time-hhmm">
-        <label>
-          <input
-            type="radio"
-            name="hhmm"
-            value="hh"
-            [(ngModel)]="hhmm"
-            (ngModelChange)="auto = false"
-          />
-          <span [innerText]="hour"></span>
-        </label>
-        <span>:</span>
-        <label>
-          <input type="radio" name="hhmm" value="mm" [(ngModel)]="hhmm" />
-          <span [innerText]="minute"></span>
-        </label>
-      </div>
-      <div class="time-ampm">
-        <label>
-          <input type="radio" name="ampm" value="am" [(ngModel)]="ampm" />
-          <span>AM</span>
-        </label>
-        <label>
-          <input type="radio" name="ampm" value="pm" [(ngModel)]="ampm" />
-          <span>PM</span>
-        </label>
-      </div>
-    </header>
-    <article>
-      <div class="time-dial">
-        <label *ngFor="let item of dial" [ngStyle]="item">
-          <input
-            type="radio"
-            name="time"
-            [value]="item[hhmm]"
-            [ngModel]="hhmm === 'hh' ? hour : minute"
-            (ngModelChange)="timeChange($event)"
-          />
-          <div [innerText]="item[hhmm]"></div>
-        </label>
-        <div class="hand" [style.transform]="rotateHand()"></div>
-      </div>
-    </article>
-    <footer>
-      <button (click)="cancel()">Cancel</button>
-      <button (click)="ok()">Ok</button>
-    </footer>
-  </section>
-  
+<div class="calender" (click)="openPicker()">
+    <div class="header"></div>
+    <ul class="flex-container wrap">
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+        <li class="flex-item"></li>
+    </ul>
+</div>
+
+<div id="popup1" class="overlay" *ngIf="isOpen">
+    <div class="popup">
+        <!-- <h2>Here i am</h2> -->
+        <div class="content">
+            <div class="picker-container">
+                <div class="picker" *ngIf="disablePicker === 'time' || disablePicker === 'none'">
+                    <a class="close" (click)="closePicker()">&times;</a>
+                    <div class="cell" title="Day">
+                        <!-- <label for="day">Day: </label> -->
+                        <select class="custom-select" [(ngModel)]="dayVal" (change)="onDayChange()"
+                            onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                            <option *ngFor="let day of days" [value]="day">{{day}}</option>
+                        </select>
+                    </div>
+                    <b class="colon">-</b>
+                    <div class="cell" title="Month">
+                        <!-- <label for="day">Months: </label> -->
+                        <select class="custom-select wide-field" [(ngModel)]="monthVal" (change)="onMonthChange($event)"
+                            onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                            <option *ngFor="let month of months" [value]="month">{{month.substring(0, 3)}}</option>
+                        </select>
+                    </div>
+                    <b class="colon">-</b>
+                    <div class="cell" title="Year">
+                        <!-- <label for="day">Years: </label> -->
+                        <select class="custom-select wide-field" [(ngModel)]="yearVal" (change)="onYearChange()"
+                            onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                            <option *ngFor="let year of years" [value]="year">{{year}}</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="picker" *ngIf="disablePicker === 'date' || disablePicker === 'none'">
+                    <div class="cell" title="Hour">
+                        <select class="custom-select" [(ngModel)]="hrs" onfocus='this.size=10;' onblur='this.size=1;'
+                            onchange='this.size=1; this.blur();'>
+                            <option *ngFor="let hour of hours" [value]="hour">{{hour}}</option>
+                        </select>
+                    </div>
+                    <b class="colon">:</b>
+                    <div class="cell" title="Minute">
+                        <select class="custom-select" [(ngModel)]="mins" onfocus='this.size=10;' onblur='this.size=1;'
+                            onchange='this.size=1; this.blur();'>
+                            <option *ngFor="let min of minutes" [value]="min">{{min}}</option>
+                        </select>
+                    </div>
+                    <b class="colon" *ngIf="isSeconds">:</b>
+                    <div class="cell" title="Second" *ngIf="isSeconds">
+                        <input type="text" [(ngModel)]="secs" minlength="2" maxlength="2" class="input" readonly>
+                    </div>
+                    <div class="cell" *ngIf="!isMilitaryTime">
+                        <input type="text" [(ngModel)]="ampm" minlength="2" (click)="changeAmPm()" maxlength="2"
+                            class="input" readonly>
+                    </div>
+                </div>
+                <div>
+                    <button class="set-btn" (click)="sendDateTime()">Set</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

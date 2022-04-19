@@ -6,6 +6,7 @@ import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
   styleUrls: ['./wolf-picker.component.scss']
 })
 export class WolfPickerComponent implements OnInit {
+ 
   today: any = new Date();
   hrs: any;
   mins: any;
@@ -13,7 +14,7 @@ export class WolfPickerComponent implements OnInit {
   hours: any = [];
   minutes: any = [];
   @Input() wolfTransform: any;
-  @Output() setTime = new EventEmitter<any>();
+  @Output() setDateTime = new EventEmitter<any>();
   isSeconds: boolean = true;
   isMilitaryTime: boolean = true;
 
@@ -42,15 +43,13 @@ export class WolfPickerComponent implements OnInit {
   previousDay:any;
   dateTime: any;
   isOpen: boolean = false;
-  divider: string = "-";
   disablePicker: string = "none";
 
   constructor() {}
 
   ngOnInit(): void {
     this.disablePicker = this.wolfTransform?.disablePicker?.toLowerCase() === "time" ? "time" : this.wolfTransform?.disablePicker?.toLowerCase() === "date" ? "date" : this.disablePicker;
-    this.divider = this.wolfTransform?.divider === 1 ? "-" : "/";
-    this.isSeconds = this.wolfTransform?.secconds;
+    this.isSeconds = this.wolfTransform?.seconds;
     this.isMilitaryTime = this.wolfTransform?.isMilitaryTime;
     this.hrs = this.isMilitaryTime ? this.today.getHours() : this.today.getHours() > 12 ? this.today.getHours() - 12 : this.today.getHours() == 12 ? this.today.getHours() - 12 : this.today.getHours();
     this.mins = this.wolfTransform['steps'] ? Math.round(this.today.getMinutes() / this.wolfTransform.steps) * this.wolfTransform.steps :this.today.getMinutes();
@@ -145,9 +144,27 @@ export class WolfPickerComponent implements OnInit {
   }
 
   sendDateTime() {
-    this.date = this.yearVal+this.divider+this.addExtraDigit(this.months.indexOf(this.monthVal)+1)+this.divider+this.addExtraDigit(this.dayVal);
-    this.time = this.addExtraDigit(this.hrs)+':'+this.addExtraDigit(this.mins)+(this.isSeconds ? `:${this.addExtraDigit(this.secs)}` : '')+(!this.isMilitaryTime ? `${this.ampm}` : '');
-    this.setTime.emit(`${this.date} ${this.time}`);
+    let date: any = {};
+    let time: any = {};
+    
+    if(this.disablePicker === 'time' || this.disablePicker === 'none') {
+      this.yearVal ? date['year'] = this.yearVal : '';
+      this.monthVal ? date['month'] = this.addExtraDigit(this.months.indexOf(this.monthVal)+1) : '';
+      this.dayVal ? date['day'] = this.addExtraDigit(this.dayVal) : '';
+    }
+
+    if(this.disablePicker === 'date' || this.disablePicker === 'none') {
+      this.hrs ? time['hour'] =  this.addExtraDigit(this.hrs) : '';
+      this.mins ? time['minute'] = this.addExtraDigit(this.mins) : '';
+      this.isSeconds ? time['second'] = this.addExtraDigit(this.secs) : '';
+      !this.isMilitaryTime ? time['ampm'] = this.ampm : '';
+    }
+
+    let  dateTimeObject:any = {date, time};
+
+    // this.date = this.yearVal+"-"+this.addExtraDigit(this.months.indexOf(this.monthVal)+1)+"-"+this.addExtraDigit(this.dayVal);
+    // this.time = this.addExtraDigit(this.hrs)+':'+this.addExtraDigit(this.mins)+(this.isSeconds ? `:${this.addExtraDigit(this.secs)}` : '')+(!this.isMilitaryTime ? `${this.ampm}` : '');
+    this.setDateTime.emit(dateTimeObject);
     this.isOpen = false;
   }
 }

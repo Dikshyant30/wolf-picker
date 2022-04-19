@@ -1,27 +1,122 @@
-# Playground
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.1.
+# Wolf Picker
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
-## Development server
+## Description
+Simple and **lightweight date time picker** for angular applications with **no dependencies.**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### A date picker for your React app.
+- No dependencies needed.
+- Pick days, months, years.
+- Pick hours, minutes, seconds.
+- Very easy to modify the date and time format .
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Tech Stack
 
-## Build
+**Client:** Angular, HTML5, SCSS, TS, JS.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Getting started 
 
-## Running unit tests
+### Compatibility
+Your project needs to use **Angular 13.1.0** or later. We will release wolf-picker for older version of Angular also .
+| Angular Version     | Newest compatible wolf-picker version  |
+| :------------ |   --------: |
+| `>= 13.1.0`        |  latest |
+| `< 13.1.0`         |  Coming Soon...|
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+ 
+### Installation
 
-## Running end-to-end tests
+Add wolf-picker to your project by executing
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+  $ npm i wolf-picker
+```
+### Usage
+Here's an example of basic usage:
+> Import WolfPickerModule in app.module.ts
+```js
+import { AppComponent } from './app.component';
+import { WolfPickerModule } from 'wolf-picker';
 
-## Further help
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    WolfPickerModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { } 
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Options and Config
+
+Use wolf-picker element in your html file along with wolfConfig object.
+
+```html
+  <wolf-picker [wolfTransform]="wolfConfig" (setDateTime)="getDateTime($event)"><wolf-picker>
+```
+Use wolfConfig object to access and modify the options.
+```js
+  wolfConfig = {
+    "seconds": boolean,
+    "isMilitaryTime": boolean,
+    "steps": number,
+    "disablePicker": string
+  }
+```
+Use wolfConfig object to access and modify the options.
+
+| Options     | Value      | Description  |
+| :------------ |   :---:       | --------: |
+| `seconds`        | `true, false`         |   User can enable and disable seconds input field. |
+| `isMilitaryTime`         | `true, false`         | User can set true for 24 hours format and false for 12 hours format.
+| `steps`         | `1,2,3,4,5....60`         | User can set the steps for minutes .
+| `disablePicker`         | `"date","time"`         | User can disable any one picker.
+
+Use getDateTime function to get the setDateTime event.
+```js
+  dateTime = "";
+  getDateTime(event: Event) {
+    this.dateTime = event;
+  }
+```
+Based on your wolfConfig object setDateTime event brings an object of date and time.
+```js
+  {
+    "date": {
+        "year": 2022,
+        "month": "04",
+        "day": 19
+    },
+    "time": {
+        "hour": "09",
+        "minute": 55,
+        "second": 36,
+        "ampm": "pm"
+    }
+}
+```
+
+## User guide
+
+Each input field behaves as drop down , user can click on input field and can scroll
+to select the option. 
+
+
+## License & Copyright
+
+© Dikshyant Dash
+
+Licensed under the [MIT](https://choosealicense.com/licenses/mit/) License.
+
+
+## Author
+
+- [@Dikshyant Dash](www.linkedin.com/in/dikshyant-dash-a56655164)

@@ -5,7 +5,7 @@
 ## Description
 Simple and **lightweight date time picker** for angular applications with **no dependencies.**
 
-### A date picker for your React app.
+### A date picker for your Angular app.
 - No dependencies needed.
 - Pick days, months, years.
 - Pick hours, minutes, seconds.

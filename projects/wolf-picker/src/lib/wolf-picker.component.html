@@ -18,29 +18,31 @@
         <div class="content">
             <div class="picker-container">
                 <div class="picker" *ngIf="disablePicker === 'time' || disablePicker === 'none'">
-                    <a class="close" (click)="closePicker()">&times;</a>
+                    <!-- <a class="close" (click)="closePicker()">&times;</a> -->
                     <div class="cell" title="Day">
                         <!-- <label for="day">Day: </label> -->
-                        <select class="custom-select" [(ngModel)]="dayVal" (change)="onDayChange()"
+                        <select class="custom-date-select" [(ngModel)]="dayVal" (change)="onDayChange()"
                             onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
                             <option *ngFor="let day of days" [value]="day">{{day}}</option>
                         </select>
                     </div>
-                    <b class="colon">-</b>
+                    <div>
+                        <!-- <b class="colon">-</b> -->
                     <div class="cell" title="Month">
                         <!-- <label for="day">Months: </label> -->
-                        <select class="custom-select wide-field" [(ngModel)]="monthVal" (change)="onMonthChange($event)"
+                        <select class="custom-month-yr-select wide-field" [(ngModel)]="monthVal" (change)="onMonthChange($event)"
                             onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
                             <option *ngFor="let month of months" [value]="month">{{month.substring(0, 3)}}</option>
                         </select>
                     </div>
-                    <b class="colon">-</b>
+                    <!-- <b class="colon">-</b> -->
                     <div class="cell" title="Year">
                         <!-- <label for="day">Years: </label> -->
-                        <select class="custom-select wide-field" [(ngModel)]="yearVal" (change)="onYearChange()"
+                        <select class="custom-month-yr-select wide-field" [(ngModel)]="yearVal" (change)="onYearChange()"
                             onfocus='this.size=10;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
                             <option *ngFor="let year of years" [value]="year">{{year}}</option>
                         </select>
+                    </div>
                     </div>
 
                 </div>
@@ -50,6 +52,7 @@
                             onchange='this.size=1; this.blur();'>
                             <option *ngFor="let hour of hours" [value]="hour">{{hour}}</option>
                         </select>
+                        <small class="small-label">Hours</small>
                     </div>
                     <b class="colon">:</b>
                     <div class="cell" title="Minute">
@@ -57,19 +60,23 @@
                             onchange='this.size=1; this.blur();'>
                             <option *ngFor="let min of minutes" [value]="min">{{min}}</option>
                         </select>
+                        <small class="small-label">Minutes</small>
                     </div>
                     <b class="colon" *ngIf="isSeconds">:</b>
                     <div class="cell" title="Second" *ngIf="isSeconds">
                         <input type="text" [(ngModel)]="secs" minlength="2" maxlength="2" class="input" readonly>
+                        <small class="small-label">Seconds</small>
                     </div>
                     <div class="cell" *ngIf="!isMilitaryTime">
                         <input type="text" [(ngModel)]="ampm" minlength="2" (click)="changeAmPm()" maxlength="2"
                             class="input" readonly>
+                            <small class="ampm">ampm</small>
                     </div>
                 </div>
-                <div>
-                    <button class="set-btn" (click)="sendDateTime()">Set</button>
-                </div>
+            </div>
+            <div align="end" class="action">
+                <button class="set-btn" (click)="close()">Cancel</button>
+                <button class="set-btn" (click)="sendDateTime()">Ok</button>
             </div>
         </div>
     </div>

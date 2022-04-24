@@ -167,4 +167,8 @@ export class WolfPickerComponent implements OnInit {
     this.setDateTime.emit(dateTimeObject);
     this.isOpen = false;
   }
+
+  close() {
+    this.isOpen = false;
+  }
 }
